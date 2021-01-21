@@ -1,35 +1,32 @@
 #include"../Matrice.h"
-#include<time.h>
+#include "ExecutionTime.hpp"
 
 void AfficherMatrice(AG::CMatrice& mat);
 
+/*-----/!\ Pensez à tester ce code en mode Release /!\-----*/
+
 int main() {
-	AG::CMatrice mat = AG::CMatrice{ 120, 120 };
-	AG::CMatrice mat2 = AG::CMatrice{ 120, 120 };
+	AG::CMatrice mat = AG::CMatrice{ 100, 100 };
+	AG::CMatrice mat2 = AG::CMatrice{ 100, 100 };
 
 	mat.Init(3);
 	mat2.Init(3);
 	std::cout << "fin initialisation..." << std::endl;
 
-	//calcul de multiplication classique : 
-	clock_t t1, t2;
-	t1 = clock();
+	//calcul de multiplication classique :
+	ExecutionTime Et{};
 	AG::CMatrice mat4 = mat * mat2;
-	t2 = clock();
-	float temps1 = (float)(t2 - t1) / CLOCKS_PER_SEC;
-	std::cout << "fin calcul mono..." << std::endl;
+	float TimeMono = Et.End();
+	std::cout << "fin calcul mono... (en "<< TimeMono << " secondes)" << std::endl;
 
 	//calcul de multiplication multithread : 
-	clock_t t3, t4;
-	t3 = clock();
+	Et.Start();
 	AG::CMatrice mat3 = AG::CMatrice::MultWithThreads(mat, mat2);
-	t4 = clock();
-	float temps2 = (float)(t4 - t3) / CLOCKS_PER_SEC;
-	std::cout << "fin calcul multi..." << std::endl;
+	float TimeMulti = Et.End();
+	std::cout << "fin calcul multi... (en " << TimeMulti << " secondes)" << std::endl;
 
-	std::cout << "multiplication classique : (en "<<temps1<<" secondes)" << std::endl;
-	std::cout << "multiplication multithread : (en " << temps2 << " secondes)" << std::endl;
-	std::cout << "Le rapport est de " << temps1 / temps2 << std::endl;
+	//calcul du rapport de gain de temps
+	std::cout << "Le rapport est de " << TimeMono / TimeMulti << std::endl;
 }
 
 void AfficherMatrice(AG::CMatrice& mat)

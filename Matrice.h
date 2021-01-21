@@ -5,9 +5,27 @@
 #include<iostream>
 
 /*
-@brief --copyright Augustin Giraudier 2020--*/
+@file Matrice.h
+@brief Bibliothèque de gestion de matrices
+@author Augustin GIRAUDIER
+@date 20 aout 2020
+
+
+Pour un exemple de code / test de performance de l'opérateur multithread : 
+	https://github.com/AugustinGiraudier/Matrice_Bibliotheque_cpp
+*/
+
+
 namespace AG
 {
+
+	/*
+	@class CCoordonnee
+	@brief class de gestion de coordonnées 2D 
+	 - acesseurs
+	 - setters
+	 - opérateur de comparaison
+	 */
 	class CCoordonnee
 	{
 	private:
@@ -40,6 +58,14 @@ namespace AG
 		bool operator==(CCoordonnee& coord);
 	};
 
+	/*
+	@class CMatrice
+	@brief classe de gestion d'une matrice de dimention paramétrable
+	- opérateurs
+	- identité
+	- multiplication multithread
+	- puissance
+	*/
 	class CMatrice
 	{
 	private:

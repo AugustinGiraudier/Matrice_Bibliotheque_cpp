@@ -10,5 +10,6 @@ Augustin GIRAUDIER
 	- matrice identité
 	
 * dans le dossier benchmark : 
-	- un fichier main.cpp permettant de tester le rapport du temps d'execution de l'opérateur 
+	- un fichier "main.cpp" permettant de tester le rapport du temps d'execution de l'opérateur 
 	mono par rapport à l'opérateur multithread.
+	- ma petite bibliothèque "ExecutionTime.hpp" permettant de récupérer simplement le temps d'un processus

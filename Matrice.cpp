@@ -1,6 +1,16 @@
 #include "Matrice.h"
 #include<thread>
 
+/*
+@file Matrice.cpp
+@brief Bibliothèque de gestion de matrices
+@author Augustin GIRAUDIER
+@date 20 aout 2020
+
+
+Pour un exemple de code / test de performance de l'opérateur multithread :
+	https://github.com/AugustinGiraudier/Matrice_Bibliotheque_cpp
+*/
 
 AG::CMatrice::CMatrice(size_t largeur, size_t hauteur)
 {
@@ -210,8 +220,7 @@ AG::CMatrice operator*(AG::CMatrice& matA, AG::CMatrice& matB)
 			AG::CMatrice::Compute_1_line(i, matA, matB, matC);
 		return matC;
 	}
-	std::cout << "Les tailles des matrices ne permettent pas une multiplication...\n\n";
-	return AG::CMatrice(matB.getSize());
+	throw EXIT_FAILURE;
 }
 
 AG::CMatrice operator*(AG::CMatrice& matA, double b)
