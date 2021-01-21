@@ -8,3 +8,7 @@ Augustin GIRAUDIER
 	- puissance de matrices
 	- getters / setters
 	- matrice identité
+	
+* dans le dossier benchmark : 
+	- un fichier main.cpp permettant de tester le rapport du temps d'execution de l'opérateur 
+	mono par rapport à l'opérateur multithread.
