@@ -2,8 +2,9 @@
 Augustin GIRAUDIER
 
 * Ceci est une bibliothèque c++ de gestion de matrices de doubles.
-	- initialisation
-	- opérateurs (multithreading en projet)
-	- puissance
+	- initialisation des valeurs
+	- opérateurs
+	- opérateur de multiplication multithreadé (méthode static)
+	- puissance de matrices
 	- getters / setters
-	- identité
+	- matrice identité

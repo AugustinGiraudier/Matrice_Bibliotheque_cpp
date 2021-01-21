@@ -1,4 +1,5 @@
 #include "Matrice.h"
+#include<thread>
 
 
 AG::CMatrice::CMatrice(size_t largeur, size_t hauteur)
@@ -47,6 +48,62 @@ AG::CMatrice AG::CMatrice::Identity(int dimention)
 		}
 	}
 	return mat;
+}
+
+
+
+void AG::CMatrice::Compute_1_line(size_t ligneCalculee, const AG::CMatrice& A, const AG::CMatrice& B, AG::CMatrice& mResult)
+{
+	for (int j = 0; j < B.getSize().getY(); ++j)
+		for (int k = 0; k < A.getSize().getY(); ++k)
+		{
+			mResult.getVector()[ligneCalculee][j] += A.getVector()[ligneCalculee][k] * B.getVector()[k][j];
+		}
+}
+void AG::CMatrice::Compute_n_lines(size_t start, size_t end, const AG::CMatrice& A, const AG::CMatrice& B, AG::CMatrice& mResult)
+{
+	for (int i = start; i < end; i++) {
+		AG::CMatrice::Compute_1_line(i, A, B, mResult);
+	}
+}
+
+AG::CMatrice AG::CMatrice::MultWithThreads(AG::CMatrice& matA, AG::CMatrice& matB)
+{
+	size_t dimx = matA.getSize().getX();
+	unsigned int nbrThreads = std::thread::hardware_concurrency();
+	int nbrLignesParThread = dimx / nbrThreads;
+	AG::CMatrice matRetour(dimx, matB.getSize().getY());
+	std::vector<std::thread>tabThreads;
+	int nbrIteration;
+	
+
+	//si la dimension est inférieure au nombre de threads
+	if (nbrLignesParThread == 0) {
+		nbrIteration = dimx;
+		tabThreads.reserve(nbrIteration);
+		for (int i = 0; i < nbrIteration; i++)
+		{
+			tabThreads.emplace_back(std::thread(&AG::CMatrice::Compute_1_line, i, matA, matB, std::ref(matRetour)));
+		}
+	}
+	else {
+		nbrIteration = nbrThreads;
+		int Rest = dimx % nbrThreads;
+		tabThreads.reserve(nbrIteration + Rest);
+		for (int i = 0; i < nbrIteration; i++)
+		{
+			tabThreads.emplace_back(std::thread(&AG::CMatrice::Compute_n_lines, i * nbrLignesParThread, (i * nbrLignesParThread) + nbrLignesParThread, matA, matB, std::ref(matRetour)));
+		}
+		for (int i = nbrIteration; i < nbrIteration + Rest; i++) {
+			tabThreads.emplace_back(std::thread(&AG::CMatrice::Compute_1_line, i, matA, matB, std::ref(matRetour)));
+		}
+		nbrIteration += Rest;
+	}
+	for (int i = 0; i < nbrIteration; i++)
+	{
+		tabThreads[i].join();
+	}
+	return matRetour;
 }
 
 void AG::CMatrice::Init(double valeur)
@@ -145,20 +202,28 @@ AG::CMatrice operator-(AG::CMatrice& matA, AG::CMatrice& matB)
 
 AG::CMatrice operator*(AG::CMatrice& matA, AG::CMatrice& matB)
 {
-	if (matA.getSize().getX() == matB.getSize().getY())
+	if (matB.getSize().getX() == matA.getSize().getY())
 	{
-		AG::CMatrice matC(matB.getSize().getX(), matA.getSize().getY());
-
-		for (int i = 0; i < matB.getSize().getX(); ++i)
-			for (int j = 0; j < matA.getSize().getY(); ++j)
-				for (int k = 0; k < matB.getSize().getY(); ++k)
-				{
-					matC.getVector()[i][j] += matB.getVector()[i][k] * matA.getVector()[k][j];
-				}
+		AG::CMatrice matC(matA.getSize().getX(), matB.getSize().getY());
+	
+		for (int i = 0; i < matA.getSize().getX(); ++i)
+			AG::CMatrice::Compute_1_line(i, matA, matB, matC);
 		return matC;
 	}
 	std::cout << "Les tailles des matrices ne permettent pas une multiplication...\n\n";
-	return AG::CMatrice(matA.getSize());
+	return AG::CMatrice(matB.getSize());
+}
+
+AG::CMatrice operator*(AG::CMatrice& matA, double b)
+{
+	AG::CCoordonnee* size = &matA.getSize();
+	AG::CMatrice mat{ size->getX(), size->getY() };
+	for (int i = 0; i < size->getX(); i++) {
+		for (int j = 0; j < size->getY(); j++) {
+			mat.setValue(i, j, matA.getValue(i, j) * b);
+		}
+	}
+	return mat;
 }
 
 AG::CCoordonnee::CCoordonnee(size_t x, size_t y)

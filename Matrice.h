@@ -50,6 +50,7 @@ namespace AG
 		@brief objet de type coordonnée qui stocke les dimentions de la matrice*/
 		CCoordonnee m_size;
 
+
 	public:
 
 		/*-------------------------------------------constructeurs------------------------------------------------*/
@@ -78,6 +79,26 @@ namespace AG
 		@return objet matrice identitée de dimention variable
 		@param int dimension : dimention de la matrice identitée créée*/
 		static CMatrice Identity(int dimention);
+		/*
+		@return multiplication multithreadée de matrices
+		@param CMatrice& matA : matrice A
+		@param CMatrice& matB : matrice B*/
+		static CMatrice MultWithThreads(AG::CMatrice& matA, AG::CMatrice& matB);
+		/*
+		@brief Calcule 1 ligne de multiplication de matrice
+		@param size_t ligneCalculee : index de la ligne à calculer
+		@param const AG::CMatrice& A : matrice A
+		@param const AG::CMatrice& B : matrice B
+		@param AG::CMatrice& mResult : matrice résultat*/
+		static void Compute_1_line(size_t ligneCalculee, const AG::CMatrice& A, const AG::CMatrice& B, AG::CMatrice& mResult);
+		/*
+		@brief Calcule plusieurs lignes de multiplication de matrice
+		@param size_t FirstLine : index de la première ligne à calculer
+		@param size_t LastLine : index de la dernière ligne à calculer (non atteinte)
+		@param const AG::CMatrice& A : matrice A
+		@param const AG::CMatrice& B : matrice B
+		@param AG::CMatrice& mResult : matrice résultat*/
+		static void Compute_n_lines(size_t FirstLine, size_t LastLine, const AG::CMatrice& A, const AG::CMatrice& B, AG::CMatrice& mResult);
 
 		/*-----------------------------------------getters / setters------------------------------------------------*/
 
@@ -140,6 +161,9 @@ namespace AG
 	/*
 	@brief multiplication de deux matrices*/
 	AG::CMatrice operator*(AG::CMatrice& matA, AG::CMatrice& matB);
+	/*
+	@brief multiplication d'une matrice par un double*/
+	AG::CMatrice operator*(AG::CMatrice& matA, double b);
 
 #endif // !__AG_MATRICE__
 
